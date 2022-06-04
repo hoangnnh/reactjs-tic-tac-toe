@@ -19,3 +19,53 @@ export const detectWinner = (squares) => {
 
   return false;
 };
+
+export const getSquareCoordinates = (square) => {
+  switch (square) {
+    case 0:
+      return {
+        col: 1,
+        row: 1,
+      };
+    case 1:
+      return {
+        col: 2,
+        row: 1,
+      };
+    case 2:
+      return {
+        col: 3,
+        row: 1,
+      };
+    case 3:
+      return {
+        col: 1,
+        row: 2,
+      };
+    case 4:
+      return {
+        col: 2,
+        row: 2,
+      };
+    case 5:
+      return {
+        col: 3,
+        row: 2,
+      };
+    case 6:
+      return {
+        col: 1,
+        row: 3,
+      };
+    case 7:
+      return {
+        col: 2,
+        row: 3,
+      };
+    case 8:
+      return {
+        col: 3,
+        row: 3,
+      };
+  }
+};

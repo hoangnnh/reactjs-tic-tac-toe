@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import { detectWinner } from "./helpers";
+import { detectWinner, getSquareCoordinates } from "./helpers";
 
 import "./index.css";
 
@@ -55,6 +55,8 @@ class Game extends React.Component {
           squares: Array(9).fill(null),
         },
       ],
+      coordinates: [],
+      order: [],
       stepNumber: 0,
       xIsNext: true,
     };
@@ -71,12 +73,32 @@ class Game extends React.Component {
 
     squares[i] = this.state.xIsNext ? "X" : "O";
 
+    const { order, coordinates } = this.state;
+    order.push(i);
+
+    const { col, row } = getSquareCoordinates(i);
+
     this.setState({
       history: history.concat([
         {
           squares: squares,
         },
       ]),
+      coordinates:
+        this.state.stepNumber !== coordinates.length
+          ? coordinates
+              .slice(0, this.state.stepNumber)
+              .concat([{ col: col, row: row }])
+          : coordinates.concat([
+              {
+                col: col,
+                row: row,
+              },
+            ]),
+      order:
+        this.state.stepNumber !== order
+          ? order.slice(0, this.state.stepNumber).concat(i)
+          : order.concat(i),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
     });
@@ -90,12 +112,20 @@ class Game extends React.Component {
   }
 
   render() {
-    const history = this.state.history;
+    const { history, order, coordinates } = this.state;
     const current = history[this.state.stepNumber];
     const winner = detectWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const description = move ? `Step #${move}` : "Go to game start";
+      const col = move !== 0 ? coordinates[move - 1].col : "";
+      const row = move !== 0 ? coordinates[move - 1].row : "";
+
+      const player =
+        move !== 0 ? history[history.length - 1].squares[order[move - 1]] : "";
+
+      const description = move
+        ? `Step #${move}: ${player} (${col}, ${row})`
+        : "Go to game start";
 
       return (
         <li key={move}>
